@@ -1,10 +1,12 @@
 # Registro de decisiones
 
 Formato de cada entrada:
-- **Fecha / Título**
+- **#N — Título** [categoría: arquitectura | UI | contenido | rendimiento | tooling]
 - **Contexto:** qué problema había
 - **Decisión:** qué se eligió
-- **Consecuencias:** qué implica / qué se descartó
+- **Alternativas descartadas:** y por qué
+- **Consecuencias:** qué implica
+- **Código relacionado:** archivos o funciones afectadas
 - **Estado:** vigente | reemplazada por #N
 
 ---
