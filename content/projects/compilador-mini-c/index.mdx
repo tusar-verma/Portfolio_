@@ -1,0 +1,24 @@
+## Problema
+
+El trabajo práctico pedía implementar las etapas de un compilador para un
+subconjunto de C. El objetivo no era cubrir el lenguaje completo, sino
+entender cómo se conectan el análisis léxico, el parser y la generación de
+código, y cómo se reportan los errores de forma útil.
+
+## Enfoque
+
+- Análisis léxico con **Flex**, con tokens para identificadores, literales y
+  palabras reservadas.
+- Parser descendente recursivo con **Bison**, más una tabla de símbolos con
+  ámbitos anidados.
+- Verificación de tipos básica y generación de código intermedio.
+- Tests de aceptación sobre un conjunto de programas de ejemplo.
+
+Cada etapa se puede ejecutar por separado con un flag, lo que facilitó
+depurar el parser sin volver a compilar todo el pipeline.
+
+## Resultados
+
+El compilador procesa los 24 programas de la cátedra y reporta errores
+sintácticos con línea y columna. El informe documenta la gramática, las
+decisiones de diseño y las limitaciones conocidas del subconjunto elegido.

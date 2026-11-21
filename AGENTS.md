@@ -14,18 +14,22 @@ Sitio personal que muestra mis proyectos de la universidad. Cada proyecto
 tiene un repo de código y un informe tipo paper (PDF).
 
 ## Stack
-- Next.js (App Router) + TypeScript + Tailwind + shadcn/ui
+- Next.js 16 (App Router, Cache Components) + TypeScript + Tailwind + shadcn/ui
+- i18n: rutas `/[lang]` (es, en), `next/root-params` y `src/proxy.ts`
 - Contenido: MDX + metadatos validados con Zod
 - Deploy: TODO (Vercel probablemente)
 
 ## Regla de oro
 Agregar un proyecto NUNCA debe requerir tocar componentes ni páginas.
-Solo se agrega contenido en `content/projects/<slug>/`.
+Solo se agrega contenido en `content/projects/<slug>/` (y su PDF en
+`public/papers/`).
 
 ## Arquitectura de contenido
 - Las páginas y componentes acceden a los datos SOLO mediante
-  `src/lib/projects.ts` (`getProjects()`, `getProject(slug)`).
+  `src/lib/projects.ts` (`getProjects(lang)`, `getProject(slug, lang)`).
   Prohibido leer archivos de contenido desde otro lugar.
+- `src/lib/projects-fs.ts` es el adaptador de disco: lee, valida y verifica
+  assets. Es interno; no se importa desde páginas ni componentes.
 - Motivo: más adelante habrá un admin panel y la fuente de datos pasará
   a una base de datos / CMS. Solo debe cambiar la implementación de
   `projects.ts`, no sus consumidores.
@@ -36,34 +40,53 @@ Solo se agrega contenido en `content/projects/<slug>/`.
 
 content/projects/<slug>/
 meta.json # metadatos (ver schema.ts)
-index.mdx # descripción larga: problema, enfoque, resultados
-cover.png
-public/papers/<slug>.pdf
-src/lib/schema.ts
-src/lib/projects.ts
-src/app/(site)/...
-src/components/...
+index.mdx # descripción larga en español (obligatorio)
+index.en.mdx # traducción al inglés (opcional)
+cover.png # portada, servida por route handler (no va en public/)
+public/papers/<slug>.pdf # informe en español
+public/papers/<slug>-en.pdf # informe en inglés (opcional)
+src/lib/schema.ts # contratos y validación
+src/lib/projects-fs.ts # lectura de disco (interno)
+src/lib/projects.ts # API pública de contenido
+src/i18n/config.ts # locales
+src/proxy.ts # redirección a /es o /en
+src/app/[lang]/... # rutas por idioma
+src/components/... # componentes compartidos
 
+## Idiomas
+- El sitio (UI, metadata, navegación) es bilingüe ES/EN.
+- El contenido de los proyectos es español por defecto. El inglés es
+  opcional por proyecto: si falta, `/en` muestra el texto en español con
+  un aviso "Disponible solo en español".
+- Regla de consistencia: si existe `index.en.mdx`, `title` y `summary`
+  deben tener `en`. Si no existe, alcanza con `es`.
+- Repositorio y PDF no se traducen: se muestran tal como están.
 
 ## Campos de meta.json
-title, summary, year, course, institution, role, stack[], tags[],
-repoUrl, paperUrl, demoUrl?, cover, featured (bool), status
-("completed" | "in-progress").
+title {es, en?}, summary {es, en?}, year, course, institution, role,
+stack[], tags[], repoUrl, paperUrl, paperUrlEn?, demoUrl?, cover,
+featured (bool), status ("completed" | "in-progress").
 
 ## Cómo agregar un proyecto
-Usar la skill `add-project` o el agente `@project-writer`.
+Usar la skill `add-project` o el agente `@project-writer`. Como mínimo:
+`meta.json`, `index.mdx` (español), `cover.png` y `public/papers/<slug>.pdf`.
+El inglés (`title.en`, `summary.en`, `index.en.mdx`) se agrega después,
+cuando la traducción esté revisada.
 
 ## Comandos
 - `npm run dev` — desarrollo
 - `npm run build` — build (valida el contenido)
 - `npm run lint` — ESLint
 - `npx tsc --noEmit` — typecheck
+- `npx next typegen` — regenera los tipos de rutas (`PageProps`, `RouteContext`)
 
 ## Convenciones
 - Server Components por defecto; `"use client"` solo si hace falta.
 - Imágenes con `next/image`. Metadata/SEO por página con `generateMetadata`.
 - Accesibilidad: HTML semántico, contraste AA, alt en imágenes.
-- Idioma del sitio: TODO (definir; dejar textos fáciles de extraer para i18n).
+- Idioma: UI y metadata bilingües; contenido de proyectos en español con
+  inglés opcional (ver "Idiomas"). Textos de UI fuera de diccionarios por
+  ahora: al extraerlos, no cambiar la estructura de las páginas.
 - Antes de terminar una tarea: correr lint, typecheck y build.
 
 ## Memoria del proyecto

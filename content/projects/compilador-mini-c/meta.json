@@ -1,0 +1,21 @@
+{
+  "title": {
+    "es": "Compilador para un subconjunto de C",
+    "en": "Compiler for a subset of C"
+  },
+  "summary": {
+    "es": "Análisis léxico, sintáctico y generación de código para un subconjunto de C, con manejo de errores y tests de aceptación.",
+    "en": "Lexical and syntax analysis plus code generation for a subset of C, with error handling and acceptance tests."
+  },
+  "year": 2025,
+  "course": "Sintaxis y Semántica de los Lenguajes",
+  "institution": "Universidad de Ejemplo",
+  "role": "Desarrollo individual",
+  "stack": ["C", "Flex", "Bison", "Make"],
+  "tags": ["compiladores", "c", "teoria-de-lenguajes"],
+  "repoUrl": "https://github.com/ejemplo/compilador-mini-c",
+  "paperUrl": "/papers/compilador-mini-c.pdf",
+  "cover": "cover.png",
+  "featured": true,
+  "status": "completed"
+}

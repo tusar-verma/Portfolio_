@@ -1,5 +1,5 @@
 ---
-description: Convierte un repo + informe en la ficha de un proyecto (meta.json + index.mdx).
+description: Convierte un repo + informe en la ficha de un proyecto (meta.json + index.mdx en español; inglés opcional).
 mode: subagent
 ---
 Dado el path de un repo y/o un PDF de informe, generá la ficha del

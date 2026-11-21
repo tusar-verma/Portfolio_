@@ -1,0 +1,24 @@
+## Problem
+
+The assignment asked for the implementation of the stages of a compiler for a
+subset of C. The goal was not full language coverage, but understanding how
+lexical analysis, the parser and code generation fit together, and how to
+report errors in a useful way.
+
+## Approach
+
+- Lexical analysis with **Flex**, covering identifiers, literals and reserved
+  words.
+- Recursive descent parser with **Bison**, plus a symbol table with nested
+  scopes.
+- Basic type checking and intermediate code generation.
+- Acceptance tests over a set of sample programs.
+
+Each stage can run on its own behind a flag, which made it easy to debug the
+parser without rebuilding the whole pipeline.
+
+## Results
+
+The compiler handles the 24 programs from the course and reports syntax errors
+with line and column. The paper documents the grammar, the design decisions
+and the known limitations of the chosen subset.

@@ -11,16 +11,18 @@ const copy = {
     eyebrow: "Portafolio universitario",
     title: "Proyectos de la facultad, con el código y el informe de cada trabajo.",
     description:
-      "Este es el esqueleto del sitio. El listado de proyectos, las fichas con MDX y los filtros llegan en las próximas fases.",
-    note: "Fase 1 completada: routing bilingüe con /es y /en.",
+      "Un recorrido por los trabajos de la facultad, con el código y el informe de cada uno.",
+    note: "Fase 2 completada: capa de contenido validada y listado de proyectos.",
+    projectsLabel: "Ver proyectos",
     switchLabel: "View in English",
   },
   en: {
     eyebrow: "University portfolio",
     title: "Coursework projects, with the code and the paper behind each one.",
     description:
-      "This is the site skeleton. The project list, the MDX case studies and the filters arrive in the next phases.",
-    note: "Phase 1 done: bilingual routing with /es and /en.",
+      "A walk through my coursework, with the code and the paper behind each one.",
+    note: "Phase 2 done: validated content layer and project listing.",
+    projectsLabel: "See projects",
     switchLabel: "Ver en español",
   },
 } as const;
@@ -55,7 +57,13 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       </h1>
       <p className="max-w-xl text-lg text-muted-foreground">{t.description}</p>
       <p className="text-sm text-muted-foreground">{t.note}</p>
-      <div>
+      <div className="flex flex-wrap items-center gap-6">
+        <Link
+          href={`/${lang}/projects`}
+          className="text-sm font-medium underline underline-offset-4"
+        >
+          {t.projectsLabel}
+        </Link>
         <Link
           href={`/${otherLocale}`}
           className="text-sm font-medium underline underline-offset-4"
