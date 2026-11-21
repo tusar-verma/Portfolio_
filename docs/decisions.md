@@ -104,3 +104,20 @@ inglés puede mostrar títulos en español: es una decisión explícita, no un
 fallo. Se descartó traducir con máquina y se descartó ocultar proyectos sin
 traducción del listado en inglés.
 **Estado:** vigente
+
+## #9 — Ficha con MDX y 404 correcto desde el primer hit
+**Contexto:** La ficha tenía que renderizar MDX sin sumar un tema de
+tipografía paralelo, y con Partial Prefetching un slug desconocido devolvía
+200 en la primera request y recién después 404 (soft 404, con el documento
+de error de Next en lugar del 404 del sitio).
+**Decisión:** `MdxContent` envuelve `MDXRemote` de `next-mdx-remote/rsc` con
+un mapa propio de elementos (títulos, párrafos, listas, citas, código,
+links), sin `@tailwindcss/typography`. La ficha exporta
+`ensureStatic = "navigation"` y `generateStaticParams` con los slugs de
+`getProjects("es")`; un slug inexistente llama `notFound()`.
+**Consecuencias:** Las fichas se prerenderizan (`○ /es/projects/<slug>` y
+`○ /en/projects/<slug>`) y un slug desconocido responde 404 desde la primera
+request. Si el MDX empieza a usar tablas, imágenes o notas al pie, hay que
+agregarlas al mapa de `MdxContent`. `generateStaticParams` no puede devolver
+`[]`: el sitio debe publicar al menos un proyecto.
+**Estado:** vigente

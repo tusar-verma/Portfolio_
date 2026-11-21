@@ -47,7 +47,6 @@ function toSummary(
     year: meta.year,
     course: meta.course,
     institution: meta.institution,
-    role: meta.role,
     stack: meta.stack,
     tags: meta.tags,
     repoUrl: meta.repoUrl,

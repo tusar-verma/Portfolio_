@@ -109,7 +109,6 @@ export const projectMetaSchema = z.strictObject({
     .max(2100, "year debe ser anterior a 2100"),
   course: z.string().trim().min(1, "course no puede estar vacío"),
   institution: z.string().trim().min(1, "institution no puede estar vacío"),
-  role: z.string().trim().min(1, "role no puede estar vacío"),
   stack: z
     .array(z.string().trim().min(1))
     .min(1, "stack necesita al menos una tecnología"),
@@ -153,8 +152,6 @@ export interface ProjectSummary {
   course: string;
   /** Institución donde se presentó. */
   institution: string;
-  /** Rol del autor dentro del trabajo. */
-  role: string;
   /** Tecnologías usadas. */
   stack: string[];
   /** Tags normalizados para el filtro. */

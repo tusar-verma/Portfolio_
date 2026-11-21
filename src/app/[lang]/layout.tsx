@@ -4,6 +4,7 @@ import { lang } from "next/root-params";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 import { locales } from "@/i18n/config";
+import { ThemeProviderWrapper } from "@/components/theme/theme-provider-wrapper";
 
 const playfairDisplayHeading = Playfair_Display({
   subsets: ["latin"],
@@ -76,7 +77,9 @@ export default async function RootLayout({
         playfairDisplayHeading.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+      </body>
     </html>
   );
 }

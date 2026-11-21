@@ -10,7 +10,6 @@
   "year": 2025,
   "course": "Sintaxis y Semántica de los Lenguajes",
   "institution": "Universidad de Ejemplo",
-  "role": "Desarrollo individual",
   "stack": ["C", "Flex", "Bison", "Make"],
   "tags": ["compiladores", "c", "teoria-de-lenguajes"],
   "repoUrl": "https://github.com/ejemplo/compilador-mini-c",
