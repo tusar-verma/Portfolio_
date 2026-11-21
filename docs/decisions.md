@@ -121,3 +121,28 @@ request. Si el MDX empieza a usar tablas, imágenes o notas al pie, hay que
 agregarlas al mapa de `MdxContent`. `generateStaticParams` no puede devolver
 `[]`: el sitio debe publicar al menos un proyecto.
 **Estado:** vigente
+
+## #10 — Tema claro/oscuro con `next-themes` [categoría: UI]
+**Contexto:** Se pidió soportar tema oscuro. Una primera versión usaba un
+`ThemeProvider` propio que aplicaba la clase en un `useEffect`: eso corre
+después del primer paint, así que producía flash de tema (FOUC) cuando la
+preferencia resuelta no era la clara.
+**Decisión:** Usar `next-themes` (ya era dependencia). Inyecta un script
+bloqueante en `<head>` que fija la clase `light`/`dark` en `<html>` antes de
+pintar, con `attribute="class"`, `defaultTheme="system"` y `enableSystem`. El
+layout raíz lleva `suppressHydrationWarning` en `<html>` porque la librería
+muta ese elemento antes de hidratar. El `ThemeToggle` retrasa su render hasta
+`mounted` (el tema es `undefined` en SSR) y reserva el espacio con un
+placeholder para no mover el layout.
+**Alternativas descartadas:** Mantener el provider propio (reinventa
+`next-themes`, arrastra el FOUC y más código que mantener). Setear la clase
+en el server (no se puede: el tema vive en `localStorage`/preferencia del SO).
+**Consecuencias:** Sin flash ni warnings de hidratación. El `.dark` de
+`globals.css` ya tenía las variables, así que el cambio es solo de
+orquestación. El toggle se monta por ahora en una barra provisional del layout
+de `(site)`; la Fase 6 lo mueve al header definitivo.
+**Código relacionado:** `src/components/theme/theme-provider-wrapper.tsx`,
+`src/components/theme/theme-toggle.tsx`, `src/app/[lang]/layout.tsx`
+(`suppressHydrationWarning`), `src/app/[lang]/(site)/layout.tsx` (barra), y la
+eliminación de `src/components/theme/theme-provider.tsx`.
+**Estado:** vigente

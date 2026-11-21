@@ -67,6 +67,10 @@ export default async function RootLayout({
   return (
     <html
       lang={await lang()}
+      // next-themes fija la clase de tema en <html> antes de hidratar;
+      // suppressHydrationWarning evita el warning por ese cambio. Solo aplica
+      // un nivel de profundidad. Ver docs/decisions.md #10.
+      suppressHydrationWarning
       className={cn(
         "h-full",
         "antialiased",

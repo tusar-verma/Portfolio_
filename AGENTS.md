@@ -63,7 +63,7 @@ src/components/... # componentes compartidos
 - Repositorio y PDF no se traducen: se muestran tal como están.
 
 ## Campos de meta.json
-title {es, en?}, summary {es, en?}, year, course, institution, role,
+title {es, en?}, summary {es, en?}, year, course, institution,
 stack[], tags[], repoUrl, paperUrl, paperUrlEn?, demoUrl?, cover,
 featured (bool), status ("completed" | "in-progress").
 
