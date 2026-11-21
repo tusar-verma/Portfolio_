@@ -122,27 +122,124 @@ agregarlas al mapa de `MdxContent`. `generateStaticParams` no puede devolver
 `[]`: el sitio debe publicar al menos un proyecto.
 **Estado:** vigente
 
-## #10 — Tema claro/oscuro con `next-themes` [categoría: UI]
-**Contexto:** Se pidió soportar tema oscuro. Una primera versión usaba un
-`ThemeProvider` propio que aplicaba la clase en un `useEffect`: eso corre
-después del primer paint, así que producía flash de tema (FOUC) cuando la
-preferencia resuelta no era la clara.
-**Decisión:** Usar `next-themes` (ya era dependencia). Inyecta un script
-bloqueante en `<head>` que fija la clase `light`/`dark` en `<html>` antes de
-pintar, con `attribute="class"`, `defaultTheme="system"` y `enableSystem`. El
-layout raíz lleva `suppressHydrationWarning` en `<html>` porque la librería
-muta ese elemento antes de hidratar. El `ThemeToggle` retrasa su render hasta
-`mounted` (el tema es `undefined` en SSR) y reserva el espacio con un
-placeholder para no mover el layout.
-**Alternativas descartadas:** Mantener el provider propio (reinventa
-`next-themes`, arrastra el FOUC y más código que mantener). Setear la clase
-en el server (no se puede: el tema vive en `localStorage`/preferencia del SO).
-**Consecuencias:** Sin flash ni warnings de hidratación. El `.dark` de
-`globals.css` ya tenía las variables, así que el cambio es solo de
-orquestación. El toggle se monta por ahora en una barra provisional del layout
-de `(site)`; la Fase 6 lo mueve al header definitivo.
-**Código relacionado:** `src/components/theme/theme-provider-wrapper.tsx`,
+## #10 — Tema claro/oscuro con script bloqueante propio [categoría: UI]
+**Contexto:** Se pidió soportar tema oscuro sin flash (FOUC) ni warnings. Hubo
+dos intentos previos: (1) un `ThemeProvider` propio que aplicaba la clase en un
+`useEffect` (corre después del paint → FOUC); (2) `next-themes`, que resolvía el
+FOUC pero en React 19 / Next 16 renderiza su `<script>` dentro de un Client
+Component y dispara el warning "Encountered a script tag while rendering React
+component".
+**Decisión:** Un `ThemeScript` propio: un `<script>` inline en el `<body>` del
+layout raíz que corre durante la carga del HTML, antes de hidratar (no hay
+FOUC). Para evitar el warning de React 19 ("Encountered a script tag while
+rendering React component") se usa el **patrón oficial de Next.js** (guía
+"preventing flash before hydration"): el script lleva `type="text/javascript"`
+en el servidor (ejecuta) y `type="text/plain"` en el cliente (React no lo trata
+como script), con `suppressHydrationWarning` para absorber la diferencia de
+`type`. Lee `localStorage.theme` (`light`/`dark`/`system`) y, si falta o es
+`system`, usa `prefers-color-scheme`; solo togglea la clase `dark` (claro es el
+`:root` por defecto). El `ThemeToggle` es un Client Component autocontenido que
+persiste la preferencia y togglea la clase; retrasa su render hasta `mounted`
+para no romper la hidratación en `aria-pressed`. `<html>` también lleva
+`suppressHydrationWarning` porque el script muta su clase antes de hidratar. Se
+desinstaló `next-themes`.
+**Alternativas descartadas:** `next-themes` (renderiza su `<script>` en un
+Client Component → warning en React 19). Un `<script>` común sin el truco de
+`type` (también dispara el warning, aunque lo renderice un Server Component).
+Deshabilitar la regla de ESLint (tapa el síntoma, no es el patrón correcto).
+Provider propio con la clase en `useEffect` (FOUC).
+**Consecuencias:** Sin flash ni warnings, sin `eslint-disable`. El `.dark` de
+`globals.css` ya tenía las variables, así que es solo orquestación. El `content`
+del script es un literal fijo (no entra input de usuario), así que
+`dangerouslySetInnerHTML` no agrega superficie de XSS. El toggle vive en el
+header (ver #12).
+**Código relacionado:** `src/components/theme/theme-script.tsx`,
 `src/components/theme/theme-toggle.tsx`, `src/app/[lang]/layout.tsx`
-(`suppressHydrationWarning`), `src/app/[lang]/(site)/layout.tsx` (barra), y la
-eliminación de `src/components/theme/theme-provider.tsx`.
+(`suppressHydrationWarning` + `ThemeScript`).
+**Estado:** vigente
+
+## #11 — Filtros por `searchParams` con el shell estático [categoría: arquitectura]
+**Contexto:** El listado necesita filtrar por tema y año. Tenía que ser
+compartible por URL, funcionar sin JavaScript y no volver dinámica a toda la
+página (que hoy se prerenderiza por locale).
+**Decisión:** Los filtros viajan en la query (`?tag=...&year=...`). Cada opción
+es un `<Link>` cuyo `href` ya trae el `searchParams` resultante (toggle que
+conserva el otro filtro), así filtrar es navegar: sin estado de cliente ni
+`"use client"`. El encabezado del listado queda como shell estático y la parte
+que lee `searchParams` (`ProjectsExplorer`) vive bajo `<Suspense>`, de modo que
+Partial Prerendering prerenderiza el shell y resuelve solo el explorador por
+request. Las facetas (tags/años con su conteo) se calculan combinando con el
+otro filtro activo y se ocultan las que quedarían en cero.
+**Alternativas descartadas:** Estado de cliente con `useState` (rompe sin JS y
+no es compartible). Volver toda la página dinámica (pierde el prerender del
+shell). Guardar el filtro en el pathname (más rutas que mantener; la query es
+el lugar natural de un filtro opcional).
+**Consecuencias:** `/projects` pasa de estático puro (`○`) a Partial Prerender
+(`◐`): el shell sigue prerenderizado y el bloque de filtros se transmite. La
+opción activa se marca con `aria-current`. Agregar proyectos con nuevos tags o
+años no toca código: las facetas se derivan de `getProjects`.
+**Código relacionado:** `src/app/[lang]/(site)/projects/page.tsx`
+(`ProjectsExplorer` + `<Suspense>`), `src/components/filter-bar.tsx`,
+`src/components/project-grid.tsx`, `src/components/empty-state.tsx`.
+**Estado:** reemplazada por #13 (se quitaron los filtros).
+
+## #12 — Diccionarios de UI con carga perezosa y chrome bilingüe [categoría: arquitectura]
+**Contexto:** El chrome (header, footer, selectores) y la home tenían textos
+hardcodeados por idioma dispersos en objetos `copy`. Hacía falta una única
+fuente de verdad para la UI, y un selector de idioma que no te devolviera al
+inicio al cambiar de idioma.
+**Decisión:** Los textos de UI viven en `src/i18n/dictionaries/es.ts` y
+`en.ts`. El español es la fuente de verdad: `Dictionary = typeof es` (sin
+`as const`, para que sean `string` y no literales) y `en` se tipa como
+`Dictionary`, así que si falta o sobra una clave, el build falla.
+`get-dictionary.ts` (marcado `server-only`) los carga con `import()` dinámico
+para separarlos por chunk. Los Server Components del chrome leen el diccionario;
+los Client Components (`LocaleSwitcher`, `ThemeToggle`) reciben solo los textos
+que necesitan por prop, nunca el diccionario entero. El `LocaleSwitcher` usa
+`usePathname` y reemplaza solo el segmento de idioma, conservando el resto de
+la ruta.
+**Alternativas descartadas:** `next-intl`/`next-i18next` (peso y complejidad
+innecesarios para dos idiomas y textos acotados). Pasar el diccionario completo
+a los Client Components (filtraría todo el bundle de textos al cliente).
+Mantener los `copy` inline (se desincronizan y repiten).
+**Consecuencias:** Agregar un idioma es sumar un diccionario y un valor en
+`locales`. El contenido de proyectos sigue aparte (ver #6/#8): el diccionario
+es solo para la UI. El `ThemeToggle` ahora recibe sus textos; su barra
+provisional del layout (#10) se reemplazó por el header definitivo. La copia
+del listado de `projects/page.tsx` todavía es inline: se migrará al extender el
+diccionario (no era parte de este corte).
+**Código relacionado:** `src/i18n/dictionaries/es.ts`, `src/i18n/dictionaries/en.ts`,
+`src/i18n/get-dictionary.ts`, `src/components/site-header.tsx`,
+`src/components/site-footer.tsx`, `src/components/locale-switcher.tsx`,
+`src/app/[lang]/(site)/layout.tsx`, `src/app/[lang]/(site)/page.tsx`,
+`src/components/theme/theme-toggle.tsx`.
+**Estado:** vigente (el header/footer evolucionaron en #13)
+
+## #13 — Listado como timeline vertical por año, sin filtros [categoría: UI]
+**Contexto:** El listado en grilla con filtros (#11) se sentía de "portal de
+noticias" y, con 5–6 proyectos, los filtros sobraban. Se pidió una lista
+vertical ordenada siempre por fecha, con una línea de tiempo por año en
+paralelo, y un chrome menos genérico.
+**Decisión:** El listado es una lista vertical agrupada por año
+(`ProjectTimeline`): una columna-eje con el año y una línea vertical, y cada
+proyecto con título, descripción corta y enlaces a código e informe. Se
+quitaron los filtros y todo el andamiaje de `searchParams`/`<Suspense>`, así
+que `/projects` vuelve a ser estático puro (`○`). Se eliminaron `filter-bar`,
+`project-grid` y `empty-state`. En el chrome: el header ya no muestra el
+genérico "Portfolio" sino el nombre real (placeholder en `src/lib/profile.ts`);
+el footer se reduce a los enlaces de GitHub y correo (también en `profile.ts`).
+Los datos personales (nombre, GitHub, correo) se centralizan en `profile.ts`
+como placeholders, separados de los textos de UI (diccionarios) porque no se
+traducen.
+**Alternativas descartadas:** Mantener la grilla con portadas (se pidió lista de
+texto). Conservar los filtros (innecesarios con pocos proyectos; la fecha
+alcanza). Hardcodear nombre/contacto en los componentes (se repiten y cuesta
+completarlos después).
+**Consecuencias:** `/projects` vuelve a `○`. El trabajo de #11 (filtros) queda
+retirado. El contenido real (nombre, "sobre mí", contacto) queda como
+placeholder hasta el rediseño. El cómo-agregar-proyecto se documentó en
+`docs/agregar-proyecto.md`.
+**Código relacionado:** `src/components/project-timeline.tsx`,
+`src/app/[lang]/(site)/projects/page.tsx`, `src/lib/profile.ts`,
+`src/components/site-header.tsx`, `src/components/site-footer.tsx`.
 **Estado:** vigente

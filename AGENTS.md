@@ -68,7 +68,7 @@ stack[], tags[], repoUrl, paperUrl, paperUrlEn?, demoUrl?, cover,
 featured (bool), status ("completed" | "in-progress").
 
 ## Cómo agregar un proyecto
-Usar la skill `add-project` o el agente `@project-writer`. Como mínimo:
+Ver la guía paso a paso en `docs/agregar-proyecto.md`. Como mínimo:
 `meta.json`, `index.mdx` (español), `cover.png` y `public/papers/<slug>.pdf`.
 El inglés (`title.en`, `summary.en`, `index.en.mdx`) se agrega después,
 cuando la traducción esté revisada.

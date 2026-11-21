@@ -4,7 +4,7 @@ import { lang } from "next/root-params";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 import { locales } from "@/i18n/config";
-import { ThemeProviderWrapper } from "@/components/theme/theme-provider-wrapper";
+import { ThemeScript } from "@/components/theme/theme-script";
 
 const playfairDisplayHeading = Playfair_Display({
   subsets: ["latin"],
@@ -67,7 +67,7 @@ export default async function RootLayout({
   return (
     <html
       lang={await lang()}
-      // next-themes fija la clase de tema en <html> antes de hidratar;
+      // ThemeScript fija la clase de tema en <html> antes de hidratar;
       // suppressHydrationWarning evita el warning por ese cambio. Solo aplica
       // un nivel de profundidad. Ver docs/decisions.md #10.
       suppressHydrationWarning
@@ -82,7 +82,9 @@ export default async function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+        {/* Fija el tema antes del paint; debe ir primero. Ver decisions.md #10. */}
+        <ThemeScript />
+        {children}
       </body>
     </html>
   );
