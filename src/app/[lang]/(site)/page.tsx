@@ -1,13 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getProjects } from "@/lib/projects";
 import { profile } from "@/lib/profile";
+import { alternatesFor } from "@/lib/seo";
 import {
   ProjectTimeline,
   type ProjectTimelineLabels,
 } from "@/components/project-timeline";
+
+/**
+ * Metadata de la home en `/[lang]`.
+ *
+ * Usa el título y la descripción por defecto del layout; solo agrega el
+ * canonical y los `hreflang` de la raíz del idioma.
+ */
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+
+  return { alternates: alternatesFor(lang, "") };
+}
 
 /**
  * Home del sitio en `/[lang]`.

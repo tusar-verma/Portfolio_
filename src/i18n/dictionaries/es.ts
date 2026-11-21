@@ -11,6 +11,9 @@
 export const es = {
   /** Texto del enlace para saltar al contenido principal (accesibilidad). */
   skipLink: "Saltar al contenido",
+  /** Descripción del sitio para metadata/SEO (no es lorem: es texto real). */
+  siteDescription:
+    "Portfolio de proyectos académicos: el código y el informe de cada trabajo de la facultad.",
   nav: {
     home: "Inicio",
     projects: "Proyectos",

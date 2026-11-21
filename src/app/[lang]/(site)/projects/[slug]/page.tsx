@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { MdxContent } from "@/components/mdx/mdx-content";
 import { isLocale } from "@/i18n/config";
 import { getProject, getProjects } from "@/lib/projects";
+import { profile } from "@/lib/profile";
+import { alternatesFor } from "@/lib/seo";
 
 /**
  * Textos de la ficha mientras no existe el sistema de diccionarios.
@@ -90,6 +92,26 @@ export async function generateMetadata({
   return {
     title: project.title,
     description: project.summary,
+    alternates: alternatesFor(lang, `/projects/${slug}`),
+    openGraph: {
+      // Next reemplaza (no mergea) el openGraph del layout, así que se repiten
+      // siteName y locale acá para no perderlos.
+      type: "article",
+      siteName: profile.name,
+      locale: lang === "es" ? "es_ES" : "en_US",
+      url: `/${lang}/projects/${slug}`,
+      title: project.title,
+      description: project.summary,
+      // `coverUrl` es relativa; `metadataBase` la vuelve absoluta.
+      images: [
+        {
+          url: project.coverUrl,
+          width: 1200,
+          height: 630,
+          alt: project.title,
+        },
+      ],
+    },
   };
 }
 

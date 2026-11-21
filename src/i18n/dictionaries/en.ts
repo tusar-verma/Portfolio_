@@ -8,6 +8,8 @@ import type { Dictionary } from "./es";
  */
 export const en: Dictionary = {
   skipLink: "Skip to content",
+  siteDescription:
+    "Academic project portfolio: the code and the paper behind each piece of coursework.",
   nav: {
     home: "Home",
     projects: "Projects",

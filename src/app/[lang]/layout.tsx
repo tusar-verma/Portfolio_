@@ -3,7 +3,10 @@ import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google
 import { lang } from "next/root-params";
 import "../globals.css";
 import { cn } from "@/lib/utils";
-import { locales } from "@/i18n/config";
+import { defaultLocale, isLocale, locales, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
+import { profile } from "@/lib/profile";
+import { siteUrl } from "@/lib/site";
 import { ThemeScript } from "@/components/theme/theme-script";
 
 const playfairDisplayHeading = Playfair_Display({
@@ -23,21 +26,47 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-/**
- * Metadata base del sitio.
- *
- * Cada página puede sobrescribir `title` y `description`; el template
- * mantiene el nombre del sitio al final. La metadata por locale (canonical,
- * hreflang, OpenGraph) se completa en la Fase 8.
- */
-export const metadata: Metadata = {
-  title: {
-    default: "Portfolio universitario",
-    template: "%s · Portfolio universitario",
-  },
-  description:
-    "Proyectos de la universidad, con el código y el informe de cada trabajo.",
+/** Locale de OpenGraph (formato `idioma_TERRITORIO`) por cada locale del sitio. */
+const OG_LOCALE: Record<Locale, string> = {
+  es: "es_ES",
+  en: "en_US",
 };
+
+/**
+ * Metadata base del sitio, resuelta por idioma.
+ *
+ * Fija `metadataBase` (para que las rutas relativas de canonical/OG se vuelvan
+ * absolutas), el template de `title` (cada página pone su título y se le suma
+ * el nombre del sitio), la descripción por idioma y los defaults de OpenGraph y
+ * Twitter. El canonical y los `hreflang` se definen por página con
+ * `alternatesFor` (ver `src/lib/seo.ts`). Ver docs/decisions.md #14.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = isLocale(lang) ? lang : defaultLocale;
+  const dict = await getDictionary(locale);
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: profile.name,
+      template: `%s · ${profile.name}`,
+    },
+    description: dict.siteDescription,
+    openGraph: {
+      type: "website",
+      siteName: profile.name,
+      locale: OG_LOCALE[locale],
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
+  };
+}
 
 /**
  * Prerenderiza el layout raíz para cada locale soportado.

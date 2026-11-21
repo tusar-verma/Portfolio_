@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getProjects } from "@/lib/projects";
+import { alternatesFor } from "@/lib/seo";
 import {
   ProjectTimeline,
   type ProjectTimelineLabels,
@@ -50,6 +51,7 @@ export async function generateMetadata({
   return {
     title: t.title,
     description: t.description,
+    alternates: alternatesFor(lang, "/projects"),
   };
 }
 

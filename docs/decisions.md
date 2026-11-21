@@ -246,3 +246,35 @@ placeholder hasta el rediseño. El cómo-agregar-proyecto se documentó en
 `src/app/[lang]/(site)/projects/page.tsx`, `src/lib/profile.ts`,
 `src/components/site-header.tsx`, `src/components/site-footer.tsx`.
 **Estado:** vigente
+
+## #14 — SEO técnico: metadata por locale, sitemap y robots [categoría: arquitectura]
+**Contexto:** El sitio necesitaba metadata correcta por idioma (title,
+description, canonical, hreflang, OpenGraph) más sitemap y robots, sin
+desincronizar las URLs ni perder el prerender estático.
+**Decisión:** La URL base vive en `src/lib/site.ts` (`NEXT_PUBLIC_SITE_URL` con
+fallback a localhost). El layout raíz pasó de `metadata` estático a
+`generateMetadata` por idioma: fija `metadataBase`, el template de `title`
+(`%s · <nombre>`, con el nombre de `profile.ts`), la descripción por idioma
+(`siteDescription` del diccionario) y los defaults de OpenGraph/Twitter. El
+canonical y los `hreflang` se centralizan en `alternatesFor(lang, path)`
+(`src/lib/seo.ts`), que arma canonical del idioma activo + `languages` con todos
+los locales y `x-default` al idioma por defecto; lo usan home, listado y ficha.
+La ficha agrega OpenGraph `article` con la portada como `og:image` (la URL
+relativa se absolutiza con `metadataBase`). El `sitemap.ts` emite una entrada
+por URL localizada con sus alternates, y `robots.ts` apunta al sitemap.
+**Alternativas descartadas:** Hardcodear la URL (no sirve entre entornos). Poner
+canonical/hreflang en el layout (aplicaría el mismo canonical a todas las
+páginas). `lastModified` en el sitemap (`new Date()` no se puede prerenderizar
+con Cache Components; es opcional). Confiar en que la ficha herede el OpenGraph
+del layout (Next **reemplaza**, no mergea, el objeto `openGraph`: por eso la
+ficha repite `siteName` y `locale`).
+**Consecuencias:** Cada página expone canonical + hreflang correctos y el
+sitemap lista ambos idiomas y todas las fichas. Falta fijar
+`NEXT_PUBLIC_SITE_URL` en producción (hoy localhost). Una imagen OG dedicada por
+proyecto podría mejorar el share (hoy se usa la portada 1200×630).
+**Código relacionado:** `src/lib/site.ts`, `src/lib/seo.ts`,
+`src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/[lang]/layout.tsx`,
+`src/app/[lang]/(site)/page.tsx`,
+`src/app/[lang]/(site)/projects/page.tsx`,
+`src/app/[lang]/(site)/projects/[slug]/page.tsx`.
+**Estado:** vigente
