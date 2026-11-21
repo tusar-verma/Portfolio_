@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { locales, type Locale } from "@/i18n/config";
 
@@ -8,7 +7,7 @@ import { locales, type Locale } from "@/i18n/config";
  * Props de {@link LocaleSwitcher}.
  */
 interface LocaleSwitcherProps {
-  /** Idioma activo; se marca como seleccionado y no navega. */
+  /** Idioma activo; se marca como seleccionado. */
   current: Locale;
   /** Etiqueta accesible del grupo. */
   label: string;
@@ -22,8 +21,12 @@ interface LocaleSwitcherProps {
  * Client Component: necesita `usePathname` para saber en qué ruta está y
  * reemplazar solo el segmento de idioma (ej. `/es/projects/x` →
  * `/en/projects/x`), de modo que cambiar de idioma no te devuelve al inicio.
- * No lee el diccionario: recibe los textos por prop desde el header (Server
- * Component). Ver docs/decisions.md #12.
+ *
+ * Usa `<a>` (navegación completa) en vez de `<Link>` (navegación soft) a
+ * propósito: como `[lang]` es el layout raíz (ver #3), una navegación soft
+ * re-renderizaría el `<html>` y el `ThemeScript` en el cliente, lo que dispara
+ * el warning de `<script>` de React 19. Una recarga completa es además lo
+ * correcto al cambiar el idioma de todo el documento. Ver docs/decisions.md #12.
  */
 export function LocaleSwitcher({ current, label, names }: LocaleSwitcherProps) {
   const pathname = usePathname();
@@ -45,7 +48,7 @@ export function LocaleSwitcher({ current, label, names }: LocaleSwitcherProps) {
       {locales.map((locale) => {
         const active = locale === current;
         return (
-          <Link
+          <a
             key={locale}
             href={hrefFor(locale)}
             hrefLang={locale}
@@ -57,7 +60,7 @@ export function LocaleSwitcher({ current, label, names }: LocaleSwitcherProps) {
             }`}
           >
             {names[locale]}
-          </Link>
+          </a>
         );
       })}
     </div>

@@ -197,7 +197,10 @@ para separarlos por chunk. Los Server Components del chrome leen el diccionario;
 los Client Components (`LocaleSwitcher`, `ThemeToggle`) reciben solo los textos
 que necesitan por prop, nunca el diccionario entero. El `LocaleSwitcher` usa
 `usePathname` y reemplaza solo el segmento de idioma, conservando el resto de
-la ruta.
+la ruta. Navega con `<a>` (recarga completa), no con `<Link>` (soft): como
+`[lang]` es el layout raíz (#3), una navegación soft re-renderizaría el `<html>`
+y el `ThemeScript` en el cliente, lo que dispara el warning de `<script>` de
+React 19; además, recargar es lo correcto al cambiar el idioma del documento.
 **Alternativas descartadas:** `next-intl`/`next-i18next` (peso y complejidad
 innecesarios para dos idiomas y textos acotados). Pasar el diccionario completo
 a los Client Components (filtraría todo el bundle de textos al cliente).
