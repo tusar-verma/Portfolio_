@@ -15,9 +15,13 @@ tiene un repo de código y un informe tipo paper (PDF).
 
 ## Stack
 - Next.js 16 (App Router, Cache Components) + TypeScript + Tailwind + shadcn/ui
-- i18n: rutas `/[lang]` (es, en), `next/root-params` y `src/proxy.ts`
+- i18n: rutas `/[lang]` (es, en), `next/root-params` y `src/proxy.ts`. Textos de
+  UI en `src/i18n/dictionaries/{es,en}.ts` (ver "Idiomas").
 - Contenido: MDX + metadatos validados con Zod
-- Deploy: TODO (Vercel probablemente)
+- Tema claro/oscuro: `ThemeScript` (anti-FOUC) + `ThemeToggle`. Ver decisions #10.
+- SEO: metadata por locale, sitemap y robots. URL base en `NEXT_PUBLIC_SITE_URL`
+  (`src/lib/site.ts`). Ver decisions #14.
+- Deploy: TODO (Vercel probablemente). Falta fijar `NEXT_PUBLIC_SITE_URL`.
 
 ## Regla de oro
 Agregar un proyecto NUNCA debe requerir tocar componentes ni páginas.
@@ -48,10 +52,16 @@ public/papers/<slug>-en.pdf # informe en inglés (opcional)
 src/lib/schema.ts # contratos y validación
 src/lib/projects-fs.ts # lectura de disco (interno)
 src/lib/projects.ts # API pública de contenido
+src/lib/profile.ts # datos personales (nombre, GitHub, correo) — placeholders
+src/lib/seo.ts # canonical + hreflang por página
+src/lib/site.ts # URL base del sitio (NEXT_PUBLIC_SITE_URL)
 src/i18n/config.ts # locales
+src/i18n/dictionaries/ # textos de UI (es.ts es la fuente de verdad)
+src/i18n/get-dictionary.ts # carga perezosa del diccionario (server-only)
 src/proxy.ts # redirección a /es o /en
+src/app/sitemap.ts, src/app/robots.ts # SEO
 src/app/[lang]/... # rutas por idioma
-src/components/... # componentes compartidos
+src/components/... # componentes compartidos (chrome, theme, timeline)
 
 ## Idiomas
 - El sitio (UI, metadata, navegación) es bilingüe ES/EN.
@@ -85,8 +95,10 @@ cuando la traducción esté revisada.
 - Imágenes con `next/image`. Metadata/SEO por página con `generateMetadata`.
 - Accesibilidad: HTML semántico, contraste AA, alt en imágenes.
 - Idioma: UI y metadata bilingües; contenido de proyectos en español con
-  inglés opcional (ver "Idiomas"). Textos de UI fuera de diccionarios por
-  ahora: al extraerlos, no cambiar la estructura de las páginas.
+  inglés opcional (ver "Idiomas"). Los textos de UI salen de los diccionarios
+  (`src/i18n/dictionaries`); los Client Components reciben solo los textos que
+  necesitan por prop, nunca el diccionario entero. Los datos personales
+  (nombre, contacto) van en `src/lib/profile.ts`, no en los diccionarios.
 - Antes de terminar una tarea: correr lint, typecheck y build.
 
 ## Memoria del proyecto
