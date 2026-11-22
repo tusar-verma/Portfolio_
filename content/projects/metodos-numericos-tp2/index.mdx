@@ -1,0 +1,16 @@
+En este trabajo desarrollamos un clasificador de imágenes. Para esto se utilizó
+el conjunto de datos *Fashion-MNIST*, que consiste en imágenes de 28 × 28 píxeles
+de prendas de 10 tipos (remera, pantalón, pull-over, vestido, abrigo, sandalia,
+camisa, zapatilla, bolsa y bota). La estructura de los datos viene en una matriz
+con tantas filas como fotos y tantas columnas como píxeles; es decir, 28 × 28 =
+784 columnas. El clasificador tiene la capacidad de clasificar una imagen en
+alguno de estos grupos.
+
+Para construirlo utilizamos KNN (k-nearest neighbors) y PCA (principal component
+analysis), este último para reducir el tamaño de los datos sin perder
+información relevante y obtener cómputos más baratos. En el entrenamiento se usó
+k-fold cross validation, una técnica en la que se separan los datos de
+entrenamiento en k partes iguales (con distribución equitativa si se quiere), se
+entrena con k-1 partes y se valida con la parte restante. El proceso se repite
+para cada partición y se promedian los resultados, obteniendo así una medición
+de la performance menos sesgada a los datos de entrenamiento.

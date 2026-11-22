@@ -1,0 +1,20 @@
+{
+  "title": {
+    "es": "Entrenamiento por dominio para ESPCN",
+    "en": "Domain-specific training for ESPCN"
+  },
+  "summary": {
+    "es": "Recopilamos datasets de distintos dominios para experimentar si el modelo mejora en la tarea de superresolución dentro del dominio en el que fue entrenado.",
+    "en": "We compiled domain-specific datasets to train several ESPCN models and test whether super-resolution improves within each specific domain."
+  },
+  "year": 2025,
+  "course": "Deep Learning",
+  "institution": "FCEyN, UBA",
+  "stack": ["Python"],
+  "tags": ["deep-learning", "super-resolution"],
+  "repoUrl": "https://github.com/tusar-verma/Deep-Learning-Project-SR",
+  "paperUrl": "/papers/deep-learning-sr.pdf",
+  "cover": "cover.png",
+  "featured": true,
+  "status": "completed"
+}
