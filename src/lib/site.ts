@@ -2,11 +2,30 @@
  * URL base del sitio, usada para construir metadata absoluta (canonical,
  * OpenGraph, sitemap).
  *
- * Se configura con la variable de entorno `NEXT_PUBLIC_SITE_URL`; en desarrollo
- * cae a `localhost`. Se normaliza sin barra final para poder concatenar rutas.
+ * Orden de prioridad:
+ * 1. `NEXT_PUBLIC_SITE_URL` — explícita. Usala para un dominio propio o para
+ *    sobrescribir en cualquier entorno.
+ * 2. `VERCEL_PROJECT_PRODUCTION_URL` — el dominio de producción **estable** que
+ *    Vercel setea solo (hostname sin protocolo). Gracias a esto el deploy en
+ *    Vercel funciona sin configurar nada. Ver `docs/deploy.md`.
+ * 3. `http://localhost:3000` — desarrollo.
  *
- * TODO: fijar la URL de producción cuando se defina el deploy (ver AGENTS.md).
+ * Se normaliza sin barra final para poder concatenar rutas. Solo se usa en
+ * contexto de servidor/build (metadata, sitemap, robots), por eso puede leer
+ * `VERCEL_PROJECT_PRODUCTION_URL`, que no lleva el prefijo `NEXT_PUBLIC_`.
+ *
+ * @returns La URL base sin barra final.
  */
-export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-).replace(/\/+$/, "");
+function resolveSiteUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    // Vercel da solo el hostname (ej. "mi-sitio.vercel.app"), sin protocolo.
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  return "http://localhost:3000";
+}
+
+/** URL base del sitio, sin barra final. */
+export const siteUrl = resolveSiteUrl().replace(/\/+$/, "");

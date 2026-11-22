@@ -273,9 +273,11 @@ con Cache Components; es opcional). Confiar en que la ficha herede el OpenGraph
 del layout (Next **reemplaza**, no mergea, el objeto `openGraph`: por eso la
 ficha repite `siteName` y `locale`).
 **Consecuencias:** Cada página expone canonical + hreflang correctos y el
-sitemap lista ambos idiomas y todas las fichas. Falta fijar
-`NEXT_PUBLIC_SITE_URL` en producción (hoy localhost). Una imagen OG dedicada por
-proyecto podría mejorar el share (hoy se usa la portada 1200×630).
+sitemap lista ambos idiomas y todas las fichas. La URL base la resuelve
+`src/lib/site.ts`: `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL`
+(Vercel la setea sola, por eso el deploy no necesita config; ver
+`docs/deploy.md`) → `localhost`. Una imagen OG dedicada por proyecto podría
+mejorar el share (hoy se usa la portada 1200×630).
 **Código relacionado:** `src/lib/site.ts`, `src/lib/seo.ts`,
 `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/[lang]/layout.tsx`,
 `src/app/[lang]/(site)/page.tsx`,

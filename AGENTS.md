@@ -21,7 +21,8 @@ tiene un repo de código y un informe tipo paper (PDF).
 - Tema claro/oscuro: `ThemeScript` (anti-FOUC) + `ThemeToggle`. Ver decisions #10.
 - SEO: metadata por locale, sitemap y robots. URL base en `NEXT_PUBLIC_SITE_URL`
   (`src/lib/site.ts`). Ver decisions #14.
-- Deploy: TODO (Vercel probablemente). Falta fijar `NEXT_PUBLIC_SITE_URL`.
+- Deploy: Vercel (Hobby). Ver `docs/deploy.md`. La URL base se toma sola de
+  `VERCEL_PROJECT_PRODUCTION_URL`; `NEXT_PUBLIC_SITE_URL` solo para dominio propio.
 
 ## Regla de oro
 Agregar un proyecto NUNCA debe requerir tocar componentes ni páginas.
