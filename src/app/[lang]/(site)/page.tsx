@@ -5,6 +5,7 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { getProjects } from "@/lib/projects";
 import { profile } from "@/lib/profile";
 import { alternatesFor } from "@/lib/seo";
+import { ContactLinks } from "@/components/contact-links";
 import {
   ProjectTimeline,
   type ProjectTimelineLabels,
@@ -64,6 +65,14 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           {home.aboutBody.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
+        </div>
+
+        {/* Encontrame en: (contacto) */}
+        <div className="mt-2 flex flex-col gap-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            {home.contactLabel}
+          </p>
+          <ContactLinks labels={dict.footer} />
         </div>
       </section>
 

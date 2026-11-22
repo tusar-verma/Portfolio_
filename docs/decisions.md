@@ -330,3 +330,23 @@ eliminaron). El timeline, antes en el listado (#13), vive ahora en la home.
 `src/components/site-footer.tsx`, `src/components/project-timeline.tsx`,
 `src/app/[lang]/(site)/projects/[slug]/page.tsx`, `src/app/sitemap.ts`.
 **Estado:** vigente (reemplaza el listado con filtros/página aparte de #13)
+
+## #17 — Sección de contacto "Encontrame en" en el hero [categoría: UI]
+**Contexto:** El contacto solo estaba en el footer y quedaba poco visible.
+**Decisión:** Un componente `ContactLinks` (GitHub, LinkedIn, correo) como
+"pills" con ícono y acento, montado al final del hero ("sobre mí") bajo la
+etiqueta "Encontrame en" / "Find me on" (`dict.home.contactLabel`). Los íconos
+de marca (SVG inline, de #16) viven en `contact-links.tsx`. A pedido del
+usuario se **eliminó el footer** (`site-footer.tsx` y su uso en el layout de
+`(site)`): el contacto queda solo en el hero, sin duplicar. Las etiquetas de los
+enlaces siguen en `dict.footer` (las usa `ContactLinks`).
+**Alternativas descartadas:** Dejar el contacto solo en el footer (poco
+visible). Mantener footer + hero (se descartó por redundante en una página tan
+corta). Ponerlo como sección propia al final (se eligió el hero para que se vea
+de entrada).
+**Consecuencias:** Los datos de contacto salen siempre de `src/lib/profile.ts`;
+agregar una red es sumarla ahí, al componente y a `dict.footer`.
+**Código relacionado:** `src/components/contact-links.tsx`,
+`src/app/[lang]/(site)/page.tsx`, `src/components/site-footer.tsx`,
+`src/i18n/dictionaries/{es,en}.ts`.
+**Estado:** vigente

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 /**
  * Props de {@link SiteLayout}.
@@ -17,11 +16,12 @@ interface SiteLayoutProps {
 /**
  * Layout de las rutas públicas, dentro de `/[lang]/(site)`.
  *
- * Arma el chrome común: skip-link (accesibilidad), header con navegación +
- * selector de idioma + selector de tema, el contenido en `<main id="contenido">`
- * (destino del skip-link) y el footer. Lee el idioma con `lang()` de
- * `next/root-params` y resuelve los textos con `getDictionary`. Es estático: el
- * root layout prerenderiza un árbol por locale. Ver docs/decisions.md #12.
+ * Arma el chrome común: skip-link (accesibilidad), header con selector de
+ * idioma + de tema, y el contenido en `<main id="contenido">` (destino del
+ * skip-link). No hay footer: el contacto vive en el hero (ver #17). Lee el
+ * idioma con `lang()` de `next/root-params` y resuelve los textos con
+ * `getDictionary`. Es estático: el root layout prerenderiza un árbol por locale.
+ * Ver docs/decisions.md #12.
  */
 export default async function SiteLayout({ children }: SiteLayoutProps) {
   const locale = await lang();
@@ -46,8 +46,6 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
       <main id="contenido" className="flex flex-1 flex-col">
         {children}
       </main>
-
-      <SiteFooter dict={dict} />
     </>
   );
 }
