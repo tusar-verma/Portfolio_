@@ -38,7 +38,7 @@ export const en: Dictionary = {
     // Traducción del bio; ajustable por el usuario.
     aboutBody: [
       "I'm Tusar, a computer technician and an advanced undergraduate student of Computer Science (FCEyN, UBA). I'm taking my last courses and will soon start my undergraduate thesis.",
-      "I'm strongly interested in Machine Learning: I took several courses in the field and built a number of projects. I invite you to explore them: you'll find a short summary of each and, if you're interested, you can dig deeper with the report and the code.",
+      "I'm strongly interested in Machine Learning. I took several courses in the field and built a number of projects. I invite you to explore them, you'll find a short summary of each and, if you're interested, you can dig deeper with the paper and the code.",
       "I also have experience in fullstack development; for a while I built applications at ANSV (Argentina's National Road Safety Agency). Technologies I work with: TypeScript, NextJS, NestJS, React, Python, SQL (relational databases), NoSQL (MongoDB, Redis), Java, C, C++, Smalltalk, Haskell and Prolog.",
     ],
     contactLabel: "Find me on",

@@ -50,7 +50,7 @@ export const es = {
     /** Descripción personal, un párrafo por entrada. */
     aboutBody: [
       "Soy Tusar, técnico en computación y estudiante avanzado de la Licenciatura en Ciencias de la Computación (FCEyN, UBA). Estoy rindiendo las últimas materias y pronto arrancaré la tesis de licenciatura.",
-      "Tengo un fuerte interés en Machine Learning: cursé varias materias del área y desarrollé varios proyectos. Te invito a explorarlos: vas a encontrar un breve resumen de cada uno y, si te interesa, podés profundizar con el informe y el código.",
+      "Tengo un fuerte interés en Machine Learning. Cursé varias materias del área y desarrollé varios proyectos. Te invito a explorarlos, vas a encontrar un breve resumen de cada uno y, si te interesa, podés profundizar con el paper y el código.",
       "También tengo experiencia en desarrollo fullstack; durante un tiempo desarrollé aplicaciones en la ANSV (Agencia Nacional de Seguridad Vial). Tecnologías que manejo: TypeScript, NextJS, NestJS, React, Python, SQL (bases relacionales), NoSQL (MongoDB, Redis), Java, C, C++, Smalltalk, Haskell y Prolog.",
     ],
     /** Etiqueta de la sección de contacto del hero. */
