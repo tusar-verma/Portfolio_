@@ -1,0 +1,20 @@
+{
+  "title": {
+    "es": "Análisis de componentes principales para el reconocimiento de imágenes",
+    "en": "Principal Component Analysis for image recognition"
+  },
+  "summary": {
+    "es": "A partir del dataset Fashion-MNIST entrenamos un clasificador de prendas que usa PCA para extraer las features más relevantes y clasificar con KNN de forma más precisa.",
+    "en": "Using the Fashion-MNIST dataset we built a clothing classifier that uses PCA to extract the most relevant features and classify more accurately with KNN."
+  },
+  "year": 2024,
+  "course": "Métodos Numéricos",
+  "institution": "FCEyN, UBA",
+  "stack": ["Python"],
+  "tags": ["machine-learning"],
+  "repoUrl": "https://github.com/pablomerca/MN-tp2",
+  "paperUrl": "/papers/metodos-numericos-tp2.pdf",
+  "cover": "cover.png",
+  "featured": true,
+  "status": "completed"
+}

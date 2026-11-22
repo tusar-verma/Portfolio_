@@ -10,10 +10,6 @@ export const en: Dictionary = {
   skipLink: "Skip to content",
   siteDescription:
     "Academic project portfolio: the code and the paper behind each piece of coursework.",
-  nav: {
-    home: "Home",
-    projects: "Projects",
-  },
   localeSwitcher: {
     label: "Language",
     names: {
@@ -29,6 +25,7 @@ export const en: Dictionary = {
   },
   footer: {
     github: "GitHub",
+    linkedin: "LinkedIn",
     email: "Email",
   },
   projects: {
@@ -38,10 +35,12 @@ export const en: Dictionary = {
   },
   home: {
     aboutEyebrow: "About me",
-    // PLACEHOLDER (lorem ipsum): reemplazar.
-    aboutBody:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    // Traducción del bio; ajustable por el usuario.
+    aboutBody: [
+      "I'm Tusar, a computer technician and an advanced undergraduate student of Computer Science (FCEyN, UBA). I'm taking my last courses and will soon start my undergraduate thesis.",
+      "I'm strongly interested in Machine Learning: I took several courses in the field and built a number of projects. I invite you to explore them: you'll find a short summary of each and, if you're interested, you can dig deeper with the report and the code.",
+      "I also have experience in fullstack development; for a while I built applications at ANSV (Argentina's National Road Safety Agency). Technologies I work with: TypeScript, React, Python, SQL (relational databases), NoSQL (MongoDB, Redis), Java, C, C++, Smalltalk, Haskell and Prolog.",
+    ],
     projectsTitle: "Projects built during my studies",
-    allProjects: "See all projects",
   },
 };

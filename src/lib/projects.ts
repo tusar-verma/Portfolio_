@@ -103,11 +103,14 @@ export async function getProject(
   const project = await readProjectSource(slug);
   if (!project) return null;
 
+  // La descripción larga es opcional; si falta el inglés, cae al español.
   const translated = lang === "en" ? project.content.en : undefined;
+  const content = translated ?? project.content.es;
 
   return {
     ...toSummary(project.slug, project.meta, lang),
-    content: translated ?? project.content.es,
-    contentLanguage: translated ? "en" : "es",
+    content,
+    // Solo tiene sentido si hay descripción larga.
+    contentLanguage: content ? (translated ? "en" : "es") : undefined,
   };
 }

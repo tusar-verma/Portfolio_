@@ -200,7 +200,11 @@ que necesitan por prop, nunca el diccionario entero. El `LocaleSwitcher` usa
 la ruta. Navega con `<a>` (recarga completa), no con `<Link>` (soft): como
 `[lang]` es el layout raíz (#3), una navegación soft re-renderizaría el `<html>`
 y el `ThemeScript` en el cliente, lo que dispara el warning de `<script>` de
-React 19; además, recargar es lo correcto al cambiar el idioma del documento.
+React 19 y, además, hace que React repinte `<html>` sin la clase `dark` (el tema
+se resetea a claro). Regla general: **ningún `<Link>` debe cruzar de idioma**;
+por eso también se quitó el link "leerlo en español" de la ficha (#8). El único
+cambio de locale es el selector, con `<a>`. Recargar es, de paso, lo correcto al
+cambiar el idioma del documento.
 **Alternativas descartadas:** `next-intl`/`next-i18next` (peso y complejidad
 innecesarios para dos idiomas y textos acotados). Pasar el diccionario completo
 a los Client Components (filtraría todo el bundle de textos al cliente).
@@ -278,3 +282,51 @@ proyecto podría mejorar el share (hoy se usa la portada 1200×630).
 `src/app/[lang]/(site)/projects/page.tsx`,
 `src/app/[lang]/(site)/projects/[slug]/page.tsx`.
 **Estado:** vigente
+
+## #15 — Descripción larga (`index.mdx`) opcional [categoría: contenido]
+**Contexto:** Al cargar los proyectos reales, algunos se quedan solo con el
+resumen (`summary`) y no tienen una descripción larga. El diseño ya anticipaba
+que la ficha tuviera "una descripción más larga si es que se requiere".
+**Decisión:** `index.mdx` pasa a ser opcional. `assertProjectAssets` ya no lo
+exige (sí portada y PDF); `readProjectSource` lo lee solo si existe, y
+`ProjectDetail.content`/`contentLanguage` son opcionales. La ficha solo
+renderiza el bloque MDX y el aviso de idioma cuando hay contenido. La
+consistencia del inglés se mantiene: si existe `index.en.mdx`, siguen siendo
+obligatorios `title.en` y `summary.en`.
+**Alternativas descartadas:** Exigir siempre `index.mdx` (obligaría a inventar
+texto de relleno). Duplicar el `summary` como cuerpo (redundante).
+**Consecuencias:** Un proyecto puede publicarse con solo metadatos + resumen
+(ej. `redes-tp`). La portada y el PDF siguen siendo obligatorios.
+**Código relacionado:** `src/lib/projects-fs.ts`, `src/lib/projects.ts`,
+`src/lib/schema.ts`, `src/app/[lang]/(site)/projects/[slug]/page.tsx`.
+**Estado:** vigente
+
+## #16 — Sitio de una sola página, paleta slate+azul y chrome responsive [categoría: UI]
+**Contexto:** Con pocos proyectos, una página de listado aparte sobraba. Además
+el diseño se sentía poco profesional (neutros cálidos, sin acento), el header
+perdía el selector de tema en pantallas chicas y los textos quedaban pegados al
+borde en mobile.
+**Decisión:** El sitio es **una sola página**: la home lista todos los proyectos
+(no solo los destacados) como timeline por año; se eliminó
+`projects/page.tsx` y el link "ver todos". Desde una ficha, el botón vuelve al
+inicio (no al listado). El header ya no lleva nombre ni navegación: solo el
+selector de idioma y el de tema, alineados a la derecha y con `flex-wrap` para
+no cortarse en mobile. El footer centra sus enlaces (GitHub, LinkedIn, correo)
+con ícono. Paleta nueva **slate + un acento azul** (`--primary`), con
+`foreground`/`muted-foreground` y el acento pensados para contraste AA; el
+acento se usa con moderación: enlaces de acción, nodo del timeline y focus
+rings (`--ring`). Padding horizontal responsive (`px-5 sm:px-8`) para separar
+del borde en teléfonos.
+**Alternativas descartadas:** Mantener el listado aparte (innecesario con 4
+proyectos). Marca/nombre en el header (el nombre ya está en el hero; en el
+header quedaba redundante y apretaba el mobile). Acento saturado en todo (poco
+profesional; el estilo suizo usa el acento con moderación).
+**Consecuencias:** `/projects` ya no existe (404); el sitemap no lo incluye. Las
+fichas de proyecto siguen siendo páginas propias y se llega a ellas desde la
+home. Quedan sin uso las claves `nav` y `home.allProjects` del diccionario (se
+eliminaron). El timeline, antes en el listado (#13), vive ahora en la home.
+**Código relacionado:** `src/app/globals.css` (paleta),
+`src/app/[lang]/(site)/page.tsx`, `src/components/site-header.tsx`,
+`src/components/site-footer.tsx`, `src/components/project-timeline.tsx`,
+`src/app/[lang]/(site)/projects/[slug]/page.tsx`, `src/app/sitemap.ts`.
+**Estado:** vigente (reemplaza el listado con filtros/página aparte de #13)

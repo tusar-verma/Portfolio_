@@ -14,7 +14,7 @@ import { alternatesFor } from "@/lib/seo";
  */
 const copy = {
   es: {
-    back: "Volver a proyectos",
+    back: "Volver al inicio",
     course: "Materia",
     year: "Año",
     institution: "Institución",
@@ -24,15 +24,14 @@ const copy = {
     demo: "Ver demo",
     noticeTitle: "Contenido en español",
     noticeBody:
-      "La descripción de este proyecto todavía no tiene traducción al inglés.",
-    noticeLink: "Leerlo en español",
+      "La descripción larga de este proyecto todavía no tiene traducción al inglés y se muestra en español.",
     status: {
       completed: "Terminado",
       "in-progress": "En curso",
     },
   },
   en: {
-    back: "Back to projects",
+    back: "Back to home",
     course: "Course",
     year: "Year",
     institution: "Institution",
@@ -41,8 +40,8 @@ const copy = {
     paper: "Read paper",
     demo: "View demo",
     noticeTitle: "Content in Spanish",
-    noticeBody: "This project write-up has not been translated yet.",
-    noticeLink: "Read it in Spanish",
+    noticeBody:
+      "This project's write-up hasn't been translated yet and is shown in Spanish.",
     status: {
       completed: "Completed",
       "in-progress": "In progress",
@@ -149,7 +148,7 @@ import { Suspense } from "react";
  */
 function ProjectPageSkeleton() {
   return (
-    <article className="mx-auto w-full max-w-3xl px-6 py-16">
+    <article className="mx-auto w-full max-w-3xl px-5 py-16 sm:px-8">
       <div className="h-6 w-1/4 bg-muted animate-pulse rounded mb-8" />
       <div className="h-10 w-3/4 bg-muted animate-pulse rounded mb-4" />
       <div className="h-6 w-full bg-muted animate-pulse rounded mb-8" />
@@ -181,9 +180,9 @@ async function ProjectPageContent({
   const t = copy[lang];
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-6 py-16">
+    <article className="mx-auto w-full max-w-3xl px-5 py-16 sm:px-8">
       <Link
-        href={`/${lang}/projects`}
+        href={`/${lang}`}
         className="text-sm font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
       >
         ← {t.back}
@@ -210,7 +209,7 @@ async function ProjectPageContent({
             href={project.repoUrl}
             target="_blank"
             rel="noreferrer"
-            className="underline underline-offset-4"
+            className="text-primary underline-offset-4 hover:underline"
           >
             {t.repo}
           </a>
@@ -218,7 +217,7 @@ async function ProjectPageContent({
             href={project.paperUrl}
             target="_blank"
             rel="noreferrer"
-            className="underline underline-offset-4"
+            className="text-primary underline-offset-4 hover:underline"
           >
             {t.paper}
           </a>
@@ -227,7 +226,7 @@ async function ProjectPageContent({
               href={project.demoUrl}
               target="_blank"
               rel="noreferrer"
-              className="underline underline-offset-4"
+              className="text-primary underline-offset-4 hover:underline"
             >
               {t.demo}
             </a>
@@ -246,16 +245,10 @@ async function ProjectPageContent({
         />
       </div>
 
-      {project.contentLanguage !== lang && (
+      {project.content && project.contentLanguage !== lang && (
         <aside className="mt-8 border border-border bg-muted/40 p-4 text-sm">
           <p className="font-semibold">{t.noticeTitle}</p>
           <p className="mt-1 text-muted-foreground">{t.noticeBody}</p>
-          <Link
-            href={`/es/projects/${project.slug}`}
-            className="mt-2 inline-block underline underline-offset-4"
-          >
-            {t.noticeLink}
-          </Link>
         </aside>
       )}
 
@@ -295,9 +288,11 @@ async function ProjectPageContent({
         </div>
       </dl>
 
-      <div className="mt-10">
-        <MdxContent source={project.content} />
-      </div>
+      {project.content && (
+        <div className="mt-10">
+          <MdxContent source={project.content} />
+        </div>
+      )}
     </article>
   );
 }

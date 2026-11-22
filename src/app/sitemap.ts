@@ -19,10 +19,10 @@ import { siteUrl } from "@/lib/site";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getProjects(defaultLocale);
 
-  // Rutas lógicas sin prefijo de idioma.
+  // Rutas lógicas sin prefijo de idioma. No hay listado `/projects` (el sitio
+  // es una sola página, ver #16); sí cada ficha de proyecto.
   const paths = [
     "",
-    "/projects",
     ...projects.map((project) => `/projects/${project.slug}`),
   ];
 

@@ -26,8 +26,11 @@ export interface RawProject {
 
 /** Proyecto con el MDX de todos los idiomas ya leído. */
 export interface RawProjectSource extends RawProject {
-  /** Contenido MDX por locale; `en` falta si no hay traducción. */
-  content: { es: string; en?: string };
+  /**
+   * Contenido MDX por locale. `es` falta si el proyecto no tiene descripción
+   * larga (es opcional); `en` falta si no hay traducción.
+   */
+  content: { es?: string; en?: string };
 }
 
 /**
@@ -106,10 +109,11 @@ async function readMeta(slug: string): Promise<ProjectMeta> {
 /**
  * Verifica que existan los archivos obligatorios y los opcionales declarados.
  *
- * Obligatorios: portada, `index.mdx` (español) y el PDF en español. El inglés
- * es opcional; si existe `index.en.mdx`, `meta.json` debe traer `title.en` y
- * `summary.en` para que el listado en inglés no mezcle idiomas. Falla en el
- * build en vez de dejar un link roto o una ficha sin contenido.
+ * Obligatorios: portada y el PDF en español. La descripción larga (`index.mdx`)
+ * es opcional: un proyecto puede quedarse con el resumen y los metadatos. El
+ * inglés también es opcional; si existe `index.en.mdx`, `meta.json` debe traer
+ * `title.en` y `summary.en` para que el listado en inglés no mezcle idiomas.
+ * Falla en el build en vez de dejar un link roto.
  *
  * @param slug Slug del proyecto.
  * @param meta Metadatos ya validados, de donde salen `cover`, `paperUrl` y
@@ -123,7 +127,6 @@ async function assertProjectAssets(
 ): Promise<void> {
   const required = [
     path.join(CONTENT_DIR, slug, meta.cover),
-    path.join(CONTENT_DIR, slug, "index.mdx"),
     path.join(PUBLIC_DIR, meta.paperUrl.replace(/^\//, "")),
     ...(meta.paperUrlEn
       ? [path.join(PUBLIC_DIR, meta.paperUrlEn.replace(/^\//, ""))]
@@ -269,9 +272,13 @@ export async function readProjectSource(
   const meta = await readMeta(slug);
   await assertProjectAssets(slug, meta);
 
+  const spanishPath = path.join(CONTENT_DIR, slug, "index.mdx");
   const englishPath = path.join(CONTENT_DIR, slug, "index.en.mdx");
   const [es, en] = await Promise.all([
-    readFile(path.join(CONTENT_DIR, slug, "index.mdx"), "utf8"),
+    // La descripción larga es opcional (ver assertProjectAssets).
+    fileExists(spanishPath).then((exists) =>
+      exists ? readFile(spanishPath, "utf8") : undefined,
+    ),
     // La traducción es opcional: `assertProjectAssets` ya validó que, si
     // existe, los textos de `meta.json` también estén en inglés.
     fileExists(englishPath).then((exists) =>

@@ -70,7 +70,7 @@ export function ProjectTimeline({ projects, lang, labels }: ProjectTimelineProps
                 {/* Nodo sobre la línea. */}
                 <span
                   aria-hidden="true"
-                  className="absolute -left-6 top-2 size-2 -translate-x-1/2 rounded-full bg-foreground sm:-left-10"
+                  className="absolute -left-6 top-2 size-2 -translate-x-1/2 rounded-full bg-primary sm:-left-10"
                 />
                 <h2 className="font-heading text-2xl leading-snug tracking-tight">
                   <Link
@@ -86,7 +86,7 @@ export function ProjectTimeline({ projects, lang, labels }: ProjectTimelineProps
                     href={project.repoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium underline underline-offset-4"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
                   >
                     {labels.code}
                   </a>
@@ -94,7 +94,7 @@ export function ProjectTimeline({ projects, lang, labels }: ProjectTimelineProps
                     href={project.paperUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium underline underline-offset-4"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
                   >
                     {labels.paper}
                   </a>

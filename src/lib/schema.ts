@@ -177,13 +177,20 @@ export interface ProjectSummary {
  * sería trabajo innecesario.
  */
 export interface ProjectDetail extends ProjectSummary {
-  /** Contenido MDX crudo, ya resuelto con fallback al español. */
-  content: string;
+  /**
+   * Contenido MDX crudo, ya resuelto con fallback al español.
+   *
+   * La descripción larga es opcional: un proyecto puede quedarse con el resumen
+   * y los metadatos (ver docs/decisions.md #15). Es `undefined` si no hay
+   * `index.mdx` ni `index.en.mdx`.
+   */
+  content?: string;
   /**
    * Idioma en el que está realmente el MDX.
    *
    * Puede no coincidir con el locale de la URL cuando el proyecto todavía no
-   * tiene traducción; la ficha lo usa para mostrar el aviso.
+   * tiene traducción; la ficha lo usa para mostrar el aviso. Es `undefined` si
+   * no hay descripción larga.
    */
-  contentLanguage: Locale;
+  contentLanguage?: Locale;
 }

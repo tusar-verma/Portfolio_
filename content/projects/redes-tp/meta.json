@@ -1,0 +1,20 @@
+{
+  "title": {
+    "es": "Traceroute para detección de saltos intercontinentales",
+    "en": "A traceroute tool to detect intercontinental hops"
+  },
+  "summary": {
+    "es": "Desarrollamos una herramienta similar a traceroute para conectarnos a universidades de distintas partes del mundo y detectar los saltos interoceánicos.",
+    "en": "A traceroute-like tool that connects to universities around the world to detect transoceanic hops using packet round-trip times."
+  },
+  "year": 2024,
+  "course": "Teoría de las Comunicaciones",
+  "institution": "FCEyN, UBA",
+  "stack": ["Python"],
+  "tags": ["computer-networks"],
+  "repoUrl": "https://github.com/tusar-verma/tp-redes",
+  "paperUrl": "/papers/redes-tp.pdf",
+  "cover": "cover.png",
+  "featured": true,
+  "status": "completed"
+}

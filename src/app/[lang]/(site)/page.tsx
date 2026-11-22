@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -27,15 +26,13 @@ export async function generateMetadata({
 }
 
 /**
- * Home del sitio en `/[lang]`.
+ * Home del sitio en `/[lang]` — única página del sitio.
  *
- * Dos secciones: "sobre mí" (hero con el nombre y una descripción —hoy
- * placeholder lorem ipsum—) y los proyectos destacados como línea de tiempo,
- * con un link al listado completo. Los textos salen del diccionario y los datos
- * personales de `src/lib/profile.ts`; los proyectos, de `getProjects(lang)`.
- *
- * Es estática: ambos locales se prerenderizan con el `generateStaticParams`
- * del layout raíz.
+ * Dos secciones: "sobre mí" (nombre + bio) y todos los proyectos como línea de
+ * tiempo por año. Como hay pocos proyectos, se listan todos acá y no hay página
+ * de listado aparte (ver docs/decisions.md #16). Los textos salen del
+ * diccionario y los datos personales de `src/lib/profile.ts`; los proyectos, de
+ * `getProjects(lang)`. Es estática: ambos locales se prerenderizan.
  */
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -45,9 +42,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
   const dict = await getDictionary(lang);
   const home = dict.home;
-
-  // En la home solo los destacados; el listado completo vive en /projects.
-  const featured = (await getProjects(lang)).filter((project) => project.featured);
+  const projects = await getProjects(lang);
 
   const labels: ProjectTimelineLabels = {
     code: dict.projects.code,
@@ -56,7 +51,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-20 px-6 py-20">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-28 px-5 py-20 sm:gap-36 sm:px-8">
       {/* Sobre mí */}
       <section className="flex flex-col gap-6">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -65,27 +60,21 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         <h1 className="font-heading text-4xl leading-tight tracking-tight sm:text-5xl">
           {profile.name}
         </h1>
-        <p className="max-w-2xl text-lg text-muted-foreground">
-          {home.aboutBody}
-        </p>
+        <div className="flex max-w-2xl flex-col gap-4 text-lg text-muted-foreground">
+          {home.aboutBody.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
       </section>
 
-      {/* Proyectos destacados */}
+      {/* Proyectos */}
       <section className="flex flex-col gap-10">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-          <h2 className="font-heading text-2xl leading-snug tracking-tight sm:text-3xl">
-            {home.projectsTitle}
-          </h2>
-          <Link
-            href={`/${lang}/projects`}
-            className="text-sm font-medium underline underline-offset-4"
-          >
-            {home.allProjects}
-          </Link>
-        </div>
+        <h2 className="border-b border-border pb-6 font-heading text-2xl leading-snug tracking-tight sm:text-3xl">
+          {home.projectsTitle}
+        </h2>
 
-        {featured.length > 0 && (
-          <ProjectTimeline projects={featured} lang={lang} labels={labels} />
+        {projects.length > 0 && (
+          <ProjectTimeline projects={projects} lang={lang} labels={labels} />
         )}
       </section>
     </div>

@@ -1,0 +1,20 @@
+{
+  "title": {
+    "es": "Clasificación binaria de lesiones pretumorales",
+    "en": "Binary classification of pre-tumoral lesions"
+  },
+  "summary": {
+    "es": "Exploramos distintos algoritmos de clasificación para predecir si células de pacientes con lesiones pretumorales desarrollaron hiperplasia.",
+    "en": "We explored several classification algorithms to predict whether cells from patients with pre-tumoral lesions developed hyperplasia."
+  },
+  "year": 2026,
+  "course": "Aprendizaje Automático",
+  "institution": "FCEyN, UBA",
+  "stack": ["Python", "scikit-learn", "pandas"],
+  "tags": ["machine-learning"],
+  "repoUrl": "https://github.com/tusar-verma/Machine-learning-2c2026/blob/main/TP1/TP_1.ipynb",
+  "paperUrl": "/papers/aprendizaje-automatico-tp1.pdf",
+  "cover": "cover.png",
+  "featured": true,
+  "status": "completed"
+}

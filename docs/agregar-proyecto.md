@@ -17,8 +17,8 @@ que usá minúsculas, números y guiones:
 | Archivo | Obligatorio | Qué es |
 |---|---|---|
 | `meta.json` | Sí | Metadatos del proyecto (ver abajo). |
-| `index.mdx` | Sí | Descripción larga **en español**. |
 | `cover.png` | Sí | Portada (también `.jpg`, `.jpeg`, `.webp` o `.avif`). |
+| `index.mdx` | No | Descripción larga **en español**. Si no está, la ficha muestra solo el resumen y los metadatos. |
 | `index.en.mdx` | No | Descripción larga en inglés (traducción). |
 
 Además, el informe PDF va **fuera** de la carpeta, en `public/papers/`:
@@ -70,7 +70,8 @@ Lo mínimo. En `meta.json`, `title` y `summary` solo con `es`:
 - En `/en`, el proyecto se muestra con el texto en español y un aviso
   ("Solo en español" en el listado, un recuadro en la ficha).
 
-> Ejemplo real en el repo: `content/projects/analisis-ventas/`.
+> La descripción larga (`index.mdx`) también es opcional: un proyecto puede
+> quedarse solo con el resumen y los metadatos (ej. `content/projects/redes-tp/`).
 
 ### Con traducción (español + inglés)
 
@@ -90,7 +91,7 @@ Lo mínimo. En `meta.json`, `title` y `summary` solo con `es`:
 > son obligatorios (si no, el build falla, para no mezclar idiomas en una misma
 > tarjeta).
 >
-> Ejemplo real: `content/projects/compilador-mini-c/`.
+> Ejemplo real: `content/projects/deep-learning-sr/` (con `title.en`/`summary.en`).
 
 ## 5. Verificar
 
@@ -102,4 +103,4 @@ Si todo está bien, el build prerenderiza la ficha del proyecto en ambos idiomas
 y el listado lo ordena por año. Si algo falta o está mal, el error nombra el
 archivo y el campo.
 
-Más detalle del porqué de cada decisión: `docs/decisions.md` (#6, #8, #9, #13).
+Más detalle del porqué de cada decisión: `docs/decisions.md` (#6, #8, #9, #13, #15).

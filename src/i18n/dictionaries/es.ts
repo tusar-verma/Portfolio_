@@ -14,10 +14,6 @@ export const es = {
   /** Descripción del sitio para metadata/SEO (no es lorem: es texto real). */
   siteDescription:
     "Portfolio de proyectos académicos: el código y el informe de cada trabajo de la facultad.",
-  nav: {
-    home: "Inicio",
-    projects: "Proyectos",
-  },
   localeSwitcher: {
     /** Etiqueta accesible del grupo de botones de idioma. */
     label: "Idioma",
@@ -37,6 +33,8 @@ export const es = {
   footer: {
     /** Texto accesible del link al perfil de GitHub. */
     github: "GitHub",
+    /** Texto accesible del link al perfil de LinkedIn. */
+    linkedin: "LinkedIn",
     /** Texto accesible del link de correo. */
     email: "Correo",
   },
@@ -49,13 +47,14 @@ export const es = {
   home: {
     /** Eyebrow de la sección "sobre mí". */
     aboutEyebrow: "Sobre mí",
-    /** Descripción personal. PLACEHOLDER (lorem ipsum): reemplazar. */
-    aboutBody:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    /** Descripción personal, un párrafo por entrada. */
+    aboutBody: [
+      "Soy Tusar, técnico en computación y estudiante avanzado de la Licenciatura en Ciencias de la Computación (FCEyN, UBA). Estoy rindiendo las últimas materias y pronto arrancaré la tesis de licenciatura.",
+      "Tengo un fuerte interés en Machine Learning: cursé varias materias del área y desarrollé varios proyectos. Te invito a explorarlos: vas a encontrar un breve resumen de cada uno y, si te interesa, podés profundizar con el informe y el código.",
+      "También tengo experiencia en desarrollo fullstack; durante un tiempo desarrollé aplicaciones en la ANSV (Agencia Nacional de Seguridad Vial). Tecnologías que manejo: TypeScript, React, Python, SQL (bases relacionales), NoSQL (MongoDB, Redis), Java, C, C++, Smalltalk, Haskell y Prolog.",
+    ],
     /** Título de la sección de proyectos de la home. */
     projectsTitle: "Proyectos desarrollados en mi trayecto académico",
-    /** Link a la página completa de proyectos. */
-    allProjects: "Ver todos los proyectos",
   },
 };
 
